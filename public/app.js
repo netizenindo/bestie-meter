@@ -77,6 +77,10 @@
           '<div class="bm-grid">' + meters + '</div></div>' +
       '</div>';
 
+    Array.prototype.forEach.call(els.capture.querySelectorAll('.bm-pic img'), function (img) {
+      img.addEventListener('error', function () { img.parentNode.innerHTML = silhouette(); });
+    });
+
     els.verdict.innerHTML =
       '<div class="v-main">' + esc(d.verdict) + '</div>' +
       '<div class="v-sub">📝 ' + esc(d.catatan_petugas) + '<br>🔮 ' + esc(d.ramalan_pertemanan) + '</div>';
