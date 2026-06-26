@@ -67,6 +67,23 @@ function probe(blocks, owner) {
   return p;
 }
 
+function findOwnerPic(blocks, username) {
+  for (const b of blocks) {
+    const stack = [b];
+    while (stack.length) {
+      const cur = stack.pop();
+      if (!cur || typeof cur !== 'object') continue;
+      if (!Array.isArray(cur) && typeof cur.username === 'string' &&
+          cur.username.toLowerCase() === username && (cur.profile_pic_url_hd || cur.profile_pic_url)) {
+        return cur.profile_pic_url_hd || cur.profile_pic_url;
+      }
+      for (const v of Object.values(cur)) if (v && typeof v === 'object') stack.push(v);
+    }
+  }
+  return null;
+}
+function safeHost(u) { try { return new URL(u).hostname; } catch (_) { return 'invalid'; } }
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   const raw = (req.query && req.query.u) || '';
@@ -96,7 +113,13 @@ module.exports = async function handler(req, res) {
     out.cookieLen = (cookie || '').length;
     const main = await getHtml('https://www.threads.com/@' + u, cookie);
     const mb = parseBlocks(main.html);
-    out.mainProbe = { httpStatus: main.status, htmlLen: main.html.length, jsonBlocks: mb.length, ...probe(mb, u) };
+    const ownerPic = findOwnerPic(mb, u);
+    out.mainProbe = {
+      httpStatus: main.status, htmlLen: main.html.length, jsonBlocks: mb.length,
+      ownerPicFound: !!ownerPic,
+      ownerPicHost: ownerPic ? safeHost(ownerPic) : null,
+      ...probe(mb, u)
+    };
 
     const rep = await getHtml('https://www.threads.com/@' + u + '/replies', cookie);
     const rb = parseBlocks(rep.html);
