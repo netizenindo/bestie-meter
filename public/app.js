@@ -16,7 +16,7 @@
     els = {
       form: $('form'), u1: $('u1'), u2: $('u2'), err: $('err'),
       inputView: $('input-view'), loading: $('loading'), resultView: $('result-view'),
-      capture: $('capture'), verdict: $('verdict'),
+      capture: $('capture'),
       caption: $('caption'), hint: $('share-hint'),
       btnSave: $('btn-save'), btnShare: $('btn-share'), btnAgain: $('btn-again'),
       chipCopy: $('chip-copy'), chipWa: $('chip-wa'), chipThreads: $('chip-threads')
@@ -73,6 +73,11 @@
           '<div class="bm-status">' + esc(d.status) + '</div>' +
           '<div class="bm-evidence">' + esc(d.evidence) + '</div>' +
         '</div>' +
+        '<div class="bm-verdict">' +
+          '<div class="bm-vmain">\u201C' + esc(d.verdict) + '\u201D</div>' +
+          '<div class="bm-vrow"><span class="bm-vlab">Catatan</span>' + esc(d.catatan_petugas) + '</div>' +
+          '<div class="bm-vrow"><span class="bm-vlab">Ramalan</span>' + esc(d.ramalan_pertemanan) + '</div>' +
+        '</div>' +
         '<div class="bm-meters"><div class="bm-meters-title">METERAN PERSAHABATAN</div>' +
           '<div class="bm-grid">' + meters + '</div></div>' +
       '</div>';
@@ -80,10 +85,6 @@
     Array.prototype.forEach.call(els.capture.querySelectorAll('.bm-pic img'), function (img) {
       img.addEventListener('error', function () { img.parentNode.innerHTML = silhouette(); });
     });
-
-    els.verdict.innerHTML =
-      '<div class="v-main">' + esc(d.verdict) + '</div>' +
-      '<div class="v-sub">📝 ' + esc(d.catatan_petugas) + '<br>🔮 ' + esc(d.ramalan_pertemanan) + '</div>';
 
     els.caption.value =
       'Tingkat bestie @' + d.a.username + ' \u00D7 @' + d.b.username + ': ' + d.score + '% \u2014 "' + d.status + '" 🤝\n' +
